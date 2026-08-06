@@ -177,12 +177,20 @@ for two decades.
 **Pregame sports, strike ladders.** The obvious follow-up: main lines get
 professional attention, but what about the long menu of derived contracts:
 game totals, run spreads, first-five-innings totals, World Cup goal counts?
-Fewer eyes, thinner books, plausibly sloppier prices. I fetched complete
-coverage of four such series, 15,011 contracts, and found the same answer:
-calibrated within a couple of points, thresholds 2.5 to 7.0 cents, nothing
-tradable. I had pre-committed to the direction I expected (totals markets
-biased toward the over, a well-documented retail tendency in sports
-betting). It did not appear.
+Fewer eyes, thinner books, plausibly sloppier prices. I fetched 15,011
+contracts across four such series and found the same answer: calibrated
+within a couple of points, 246 to 1,891 observations per band, thresholds
+2.5 to 7.0 cents, nothing tradable. I had pre-committed to the direction I
+expected (totals markets biased toward the over, a well-documented retail
+tendency in sports betting). It did not appear.
+
+That 15,011 was complete coverage of the four series when I ran it in July
+and is now 95.6% of them, because 684 more contracts closing inside the same
+window have settled since and were never backfilled. They are late-arriving
+records rather than an outcome-selected subset, so this is not the H-001
+problem in a new costume, but it is a claim that quietly expired between
+running the analysis and writing about it, which is its own small lesson
+about how long "complete" stays true.
 
 **Crypto price strikes.** Hourly Bitcoin and Ethereum contracts, which ask
 whether the coin is above a given strike at the top of the hour (will BTC be
@@ -297,14 +305,20 @@ coverage, every contract in the series, so there is no sampling rule left to
 do the biasing. On the volume-ranked corpus in §5 the same split was worth
 nothing, and I treated it as reassurance anyway.
 
-One of those out-of-sample bands did produce an
-expected value whose interval excluded zero, at +3.6 cents; I do not count
-it. Splitting the corpus in half halves the sample behind each band and
-raises its detection threshold accordingly. That band's threshold is 6.8
-cents on the out-of-sample half, against the 2.6-to-4.2 range the full
-corpus supports, so +3.6 sits below the bar it would have to clear. Counting
-the one cell out of six that cleared an uncorrected bar is the exact move
-this document's power discipline exists to prevent.
+One of those out-of-sample bands did produce a positive expected value of
++3.6 cents, and I do not count it, for two reasons that are worth separating.
+The first is power: splitting the corpus in half halves the sample behind
+each band and raises its detection threshold accordingly, so that band's
+threshold is 6.8 cents on the out-of-sample half against the 2.6-to-4.2
+range the full corpus supports, and +3.6 sits below the bar it would have to
+clear. The second I only found when I went back to reproduce it. Its
+bootstrap interval sits directly on zero, and whether the lower bound lands
+above or below depends on the resampling seed: across ten seeds it excluded
+zero six times. I had originally written that the interval excluded zero,
+which was one draw from a distribution that straddles it. Counting the one
+cell out of six that cleared an uncorrected bar would have been the exact
+move this document's power discipline exists to prevent, and it turns out
+the cell did not reliably clear even that.
 
 *A note on order size, because it moves this number.* Kalshi rounds its fee
 up to the whole cent per **order**, not per contract, so the effective
@@ -667,7 +681,7 @@ the cross-venue quote collection covers 11 – 27 July.
 | Result | Verdict | Sample | Detection threshold or bound | Power status |
 |---|---|---|---|---|
 | Pregame match-winner calibration | No edge | 161–1,636 per band | 2.8–3.7c / 3.8–5.1c | Powered; marginal in the thinnest bands |
-| Pregame strike ladders (totals, spreads, goals) | No edge | 227–958 per band | 1.8–5.1c / 2.5–7.0c | Powered to marginal |
+| Pregame strike ladders (totals, spreads, goals) | No edge | 246–1,891 per band | 1.8–5.1c / 2.5–7.0c | Powered to marginal; 15,011 of the 15,695 now settled in-window (95.6%) |
 | Crypto hourly strikes (negative control) | No edge | 205–717 per band | 1.4–9.8c / 1.9–13.4c | Powered in liquid bands |
 | In-play favorite-longshot bias | **Real calibration gap**; EV ~+1c net of costs, below the EV threshold | 905–1,612 per band | 1.9–3.1c / 2.6–4.2c | Gap powered; out-of-sample replication in 2 of 3 favorite bands; EV not resolvable |
 | Retail passive capture of that bias | Fails (adverse selection) | 3,820 orders / 2,371 fills | 2.1c (single pre-named test) | Powered against its 2c bar |
