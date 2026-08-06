@@ -27,9 +27,9 @@ ever means "no edge larger than what I could see." Where a test couldn't
 see effects of economically relevant size, I say "untested," not
 "efficient," and several fashionable-looking categories land in that bucket.
 Second, four times during the program I found what looked like real,
-tradable edge, once worth an apparent ten cents per contract, and four times
-it dissolved under my own artifact checks. Those four incidents, and the
-rules they forced, are the most useful thing this document contains.
+tradable edge, once worth several cents a contract, and four times it
+dissolved under my own artifact checks. Those four incidents, and the rules
+they forced, are the most useful thing this document contains.
 
 This is not investment advice, and the program's conclusion is not that
 prediction markets are unbeatable. It is narrower and, I think, more useful:
@@ -74,11 +74,11 @@ type 1, at retail taker costs, at the tested statistical power. A market
 maker with a fee advantage, or a forecaster with a better model, could
 profit in a market this document calls efficient, and nothing here
 contradicts them. The costs matter as much as the statistics. Kalshi's taker
-fee plus typical quoted spreads set a hurdle of roughly three to six cents
-per contract, so a market can be "miscalibrated" by two cents forever
-without that being money. Every expected-value figure here is net of those
-costs at a stated order size, a discipline that changes several conclusions
-raw calibration numbers would get wrong.
+fee peaks at 1.75 cents per contract and falls toward the extremes, and the
+median quoted spread in my corpus is 1 to 2 cents in most categories, which
+puts the typical hurdle around two to three cents and considerably higher in
+the thin ones. Every expected-value figure here is net of the actual spread
+on each observation rather than an assumed one, at a stated order size.
 
 A knowledgeable skeptic's strongest objection deserves answering here rather
 than in a footnote. *One month of quiet-season data on one venue, analyzed
@@ -134,12 +134,14 @@ single most consequential methodological choice in the program. §5
 explains what happened the one time I violated it.
 
 **The cost hurdle.** Kalshi charges takers a fee that peaks near 1.75 cents
-per contract at even-money prices and falls toward the extremes, and quoted
-spreads on these markets typically run three to six cents. Any edge must
-clear both. So the relevant question is never "is the price wrong?" but "is
-it wrong by more than three to six cents?" A market can be
-persistently miscalibrated by two points without a retail participant being
-able to do anything about it.
+per contract at even-money prices and falls toward the extremes, and an edge
+must clear that fee plus the spread it crosses. Across 260,000 observations
+the median quoted spread is 1 to 2 cents in nine of twelve categories, 4 to
+5 cents in financials and economics, and effectively unbounded in the exotic
+parlays, so the typical hurdle is around two to three cents rather than the
+three to six I assumed before measuring it. Every expected-value figure
+below uses the actual spread on each contract, so the numbers never depended
+on that assumption, but the framing did.
 
 **A note on checking this.** The analysis code behind every number below is
 public: the fee model, the calibration engine with its interval and
@@ -200,12 +202,15 @@ and a trader entering an hour or two later should profit. I tested this on
 complete coverage of every long-lived contract that resolved in the window
 (23,137 contracts, 1.4 million price bars), requiring a jump to be
 confirmed by an actual trade rather than a quote flicker. In the categories
-with enough resolutions to test properly, the answer is a flat no: weather
-(2,061 and 1,725 observations by direction), mentions markets (1,116 and
-1,007), commodities (1,002 and 754), sports (941 and 849). Detection
-thresholds of 3.4 to 5.9 cents corrected; expected values negative
-essentially everywhere. Whatever these markets do after news, they do it
-faster than a person with a manual approval step can act on.
+with enough resolutions to test properly the answer is a flat no. Entering
+one hourly candle after the jump, weather gives 2,090 and 1,747
+observations by direction, mentions markets 1,120 and 1,056, commodities 771
+and 1,022, and sports 1,251 and 1,423. Corrected
+thresholds run 3.4 to 5.9 cents in weather, mentions and commodities, and
+expected values are negative nearly everywhere. Sports is a null here too,
+but it rests on the complete-coverage calibration work above rather than on
+this test's power. Whatever these markets do after news, they do it faster
+than a person with a manual approval step can act on.
 
 **Pregame momentum and reversion.** A separate question from calibration:
 never mind whether prices are *right*, do they *trend*? If a contract drifts
@@ -229,16 +234,17 @@ lost when results get summarized.
 Two categories sit in an uncomfortable middle. Mentions markets ("will the
 president say X") and commodities cleared the bar for *large* effects but
 not for economically interesting ones: their corrected thresholds were 4.8
-and 4.8–5.9 cents respectively, against a cost hurdle of three to six. They
-cannot rule out an edge in the three-to-five-cent band, precisely the band
-that would matter. Calling them efficient would be a category error. They
-are untested where it counts.
+and 4.8–5.9 cents respectively, against a typical hurdle of two to three
+cents. They cannot rule out an edge anywhere in the two-to-five-cent band,
+which is the whole of the economically interesting range rather than part of
+it. Calling them efficient would be a category error. They are untested
+where it counts.
 
-And then the thin cells. Financial-index events (113
-observations, threshold 9.6 cents), entertainment (169–171, 7.3–8.4),
-long-dated crypto (101–175, 9.1–11.3), economics releases (72,
-12.1–12.9), politics (77–92, 11.9–13.6), elections (14–32, 16.3–24.9),
-science and technology (17–18, 14.0–27.8). Those figures are the
+And then the thin cells. Financial-index events (77–119 observations,
+thresholds 9.1–11.8 cents), entertainment (151–161, 7.3–8.9), long-dated
+crypto (104–171, 9.0–11.2), economics releases (75–76, 12.1–12.5), politics
+(77–90, 12.2–13.8), elections (20–32, 16.1–21.0), science and technology
+(18, 17.9–24.3). Those figures are the
 *uncorrected* thresholds, the only place in this document where that is
 true, and I quote them that way because applying the family penalty makes
 them worse by another 37% without changing anything about the conclusion.
@@ -318,9 +324,10 @@ that only counts a fill when the market traded *through* my price, orders
 filled 62% of the time. That sounds like plenty of free spread. But the
 fills arrived preferentially in exactly the games where the favorite was
 collapsing: I was buying from people who knew something I didn't, at the
-moments they knew it. This is adverse selection, and it consumed the entire
-spread. The passive version earned slightly *less* than simply crossing
-the spread would have.
+moments they knew it. This is adverse selection, and it consumed more than
+the entire spread. The passive version lost about a third of a cent per
+fill, against a positive cent for simply crossing the spread, so posting
+turned a small winner into a small loser.
 
 That result needs a boundary drawn around it, because it is the single
 easiest sentence in this document to over-read. What failed is **retail
@@ -349,8 +356,8 @@ often trades on both Kalshi and Polymarket, at prices that visibly differ.
 A recent large-scale study by Gebele and Matthes, *Semantic Non-Fungibility
 and Violations of the Law of One Price in Prediction Markets*
 ([arXiv:2601.01706](https://arxiv.org/abs/2601.01706)), aligned 100,000+
-events across ten venues. They found persistent fee-adjusted deviations of
-2–4% and attributed them to *semantic non-fungibility*: nominally identical
+events across ten venues. They found persistent execution-aware deviations
+of 2–4% and attributed them to *semantic non-fungibility*: nominally identical
 contracts differ subtly in resolution terms, and positions cannot be netted
 across venues, so arbitrage capital cannot force convergence. I can carry
 their mechanism one step further, and the step changes the conclusion. A
@@ -388,13 +395,19 @@ magnitude short of break-even. The deviations Gebele and Matthes measure are
 real and their explanation is right. What the deviation is *not*, until
 someone bounds the mismatch rate, is an opportunity.
 
-Their divergence magnitudes and mine are not directly comparable, since the
-venues, periods and alignment procedures all differ. But the direction of
-the difference is suggestive: my strictly rules-verified pairs diverge by
-tenths of a cent at the median, against their 2–4%. That is at least
-consistent with a hypothesis their dataset could test, that much of measured
-cross-venue "mispricing" is alignment quality in disguise. I offer it as a
-hypothesis, not a finding. The general rule I take from this, for any spread
+I wanted to compare their divergence magnitudes against mine and I cannot,
+which is worth explaining because the reason is instructive. My pairs
+diverge by about a third of a cent at the median, against their 2–4%, and
+that looks like evidence that stricter verification produces tighter
+agreement. It is not. The median contract in my pair set trades at one cent
+and three quarters of my quotes sit below a nickel, because the set is
+dominated by a nomination ladder full of candidates nobody expects to win. A
+contract priced at a penny cannot diverge by three cents, so my small
+absolute gaps are a fact about which contracts I happened to verify rather
+than about how I verified them. Measured relative to price my gaps are much
+larger than theirs, which is equally uninformative for the same reason.
+Testing the idea properly needs matched price levels, and with 36 pairs
+clustered at a penny I do not have the range. The general rule I take from this, for any spread
 trade across nominally equivalent instruments anywhere, is that **a margin
 means nothing until the non-equivalence tail is bounded, and a manual review
 process bounds it only as well as its measured miss rate.**
@@ -423,15 +436,25 @@ Everything above is only as credible as the process that would have caught
 it being wrong. Here is that process failing to be fooled, four times, in
 increasing order of subtlety.
 
-### The ten-cent edge that was a sampling choice
+### The edge that was a sampling choice
 
 The first calibration tables I ran were thrilling. Across thousands of
 sports contracts, cheap longshots were resolving yes far more often than
-their prices implied: a contract at 15 cents winning 20% of the time, one
-at 25 cents winning 31%. Expensive favorites showed the mirror image. The
-implied strategy was almost embarrassingly simple: buy cheap contracts,
-sell expensive ones, collect something like ten cents per contract after
-fees. That is not a marginal edge. That is a business.
+their prices implied, by five to nine percentage points depending on the
+band, with a contract at 15 cents winning 20% of the time. Expensive
+favorites showed the mirror image. The implied strategy was almost
+embarrassingly simple: buy cheap contracts, sell expensive ones, collect
+several cents per contract after fees. That is not a marginal edge. That is
+a business.
+
+I have to hedge that magnitude, and the reason is itself a small lesson. The
+observation table behind those first numbers was rebuilt many times against
+a growing corpus and no longer exists in its July form, so when I tried to
+reproduce the exact figure I had originally believed, I could recover the
+mechanism and the direction but not the size. The gap reconstructs at five
+to nine points and the strategy at a few cents rather than the ten I
+remember. Numbers you do not record are numbers you cannot check later, even
+against your own pipeline.
 
 It was also backwards. The textbook favorite-longshot bias runs the *other*
 way: bettors overpay for longshots, they don't underpay. Finding the
@@ -536,14 +559,15 @@ them statistical.
 
 The first is the corpus. Ask any dataset what window it actually covers
 rather than what you asked it for. My first "thirty-day" crawl of settled
-contracts turned out to hold about three hours of them. Kalshi's global
-settled feed returns newest-first, and roughly 85% of what comes back is
-multi-leg parlay spam, so a paged crawl exhausts its budget inside a single
-evening of listings. Crawling per series instead gives real coverage, and
-the parlays turn out to live in exactly two series, which makes them easy to
-handle deliberately rather than by accident. Whatever venue you are on,
-query the resolution timestamps you actually received before you believe the
-date range you intended.
+contracts turned out to hold about three hours of them, because the global
+settled feed I was paging returns newest-first and the newest listings that
+day were overwhelmingly multi-leg parlays, so the crawl spent its whole
+budget inside a single evening. Crawling per series instead gave real
+coverage. I am describing what I hit rather than a stable property of the
+API, since I never went back to measure the feed composition and my stored
+corpus is the post-fix one, which cannot show it. That is the point:
+whatever venue you are on, query the resolution timestamps you actually
+received before you believe the date range you intended.
 
 The second is the price you calibrate against. Do not use a settled
 contract's last traded price. By the time a contract settles its price has
@@ -562,13 +586,19 @@ question this study window could not.
 **The settlement-agreement counter.** Every cross-venue pair whose event
 resolves adds one observation to the mismatch-rate measurement: did the two
 venues actually settle the same way? Ten so far, ten agreements, which
-bounds the true rate only at 28%, nowhere near the one-to-five percent
-that would make the break-even arithmetic favorable. Roughly a hundred
-clean resolutions would bring the bound into that neighborhood; a thousand
-would settle it. At the rate these pairs resolve, that is a multi-year
-instrument, which is an argument for leaving it running rather than for
-abandoning it. It costs nothing: a scheduled job that compares two
-settlement records and appends a line.
+bounds the true rate only at 28%, nowhere near the one-to-five percent that
+would make the break-even arithmetic favorable.
+
+The thing I got wrong about this instrument is worth stating, because I only
+noticed it after publishing. Each verified pair yields exactly one
+observation, at its resolution, so the ceiling is the number of pairs I have
+verified rather than the time I let it run. With 36 live pairs the counter
+tops out at 46 observations ever, and because those pairs all resolve in
+2027 and 2028 it produces none at all before then. It is not slow, it is
+stalled, and reaching the hundred resolutions that would make the bound
+useful requires verifying roughly ninety more pairs rather than waiting. The
+queue is now ordered by resolution date rather than match score, which is
+what built a 2028-heavy book in the first place.
 
 **The September calibration study.** The un-anchored categories (politics,
 elections, weather forecasting) are the ones the summer could not power a
@@ -582,6 +612,15 @@ exists. Coarser bands buy statistical power two ways: more observations per
 cell, and a smaller family of cells to correct for. Pre-committing to them
 is what separates a legitimate power gain from choosing the grouping that
 produces the prettiest p-value after the fact.
+
+Running the power projection forward from current accumulation says it will
+probably not deliver all three categories. Weather clears comfortably,
+politics is marginal and depends on where the floor is set, and both
+election tails currently contain zero instances of the outcome that creates
+the dispersion, which makes their variance unestimable rather than small. An
+election longshot band where no longshot has yet won tells you nothing about
+longshots, however many observations it holds. I would rather say that now
+than discover it in September.
 
 **November.** Everything in this document describes quiet-season behavior.
 The one hypothesis the program still holds open is whether these markets
@@ -633,11 +672,11 @@ the cross-venue quote collection covers 11 – 27 July.
 | In-play favorite-longshot bias | **Real calibration gap**; EV ~+1c net of costs, below the EV threshold | 905–1,612 per band | 1.9–3.1c / 2.6–4.2c | Gap powered; out-of-sample replication in 2 of 3 favorite bands; EV not resolvable |
 | Retail passive capture of that bias | Fails (adverse selection) | 3,820 orders / 2,371 fills | 2.1c (single pre-named test) | Powered against its 2c bar |
 | Pregame momentum / reversion | No edge (cells with real samples) | 341–1,091 core; 21–170 directional | 4.2–6.2c / 5.8–8.5c core | Core powered; six directional cells insufficient (to 34c) |
-| Post-jump drift, weather, mentions, commodities, sports | No edge | 754–2,061 per cell | 2.5–4.3c / 3.4–5.9c | Weather powered; mentions & commodities **untested in the 3–5c band** |
-| Post-jump drift, financials, economics, politics, elections, entertainment, sci-tech, long-dated crypto | **Insufficient data** | 14–175 per cell | 7.3–27.8c uncorrected | Not measured |
+| Post-jump drift, weather, mentions, commodities, sports | No edge | 771–2,090 per cell | 2.5–4.3c / 3.4–5.9c | Weather powered; mentions & commodities **untested in the 2–5c band**; sports rests on the calibration work, not this test |
+| Post-jump drift, financials, economics, politics, elections, entertainment, sci-tech, long-dated crypto | **Insufficient data** | 18–171 per cell | 7.3–24.3c uncorrected | Not measured |
 | Exotic multi-leg parlays | Untradable | — | — | No pre-resolution quotes exist |
 | Cross-venue lead-lag / convergence | **Not measured**: entry condition unmet | 36 verified pairs vs 50 required | — | Program closed before analysis |
-| Cross-venue settlement agreement | Running instrument | 10 resolutions | 95% upper bound 28% on mismatch rate | Accumulating |
+| Cross-venue settlement agreement | Running instrument | 10 resolutions | 95% upper bound 28% on mismatch rate | Stalled: ceiling is 46 at current pair inventory, none before 2027 |
 
 A note on the last two rows, expanding on §4. The cross-venue program was
 closed without producing a lead-lag estimate, because it had registered in
