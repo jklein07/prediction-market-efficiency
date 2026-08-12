@@ -693,8 +693,9 @@ it was right to.
 
 ### If you are replicating this
 
-Two traps that cost me time and are invisible until they bite, neither of
-them statistical.
+Three traps that cost me time and are invisible until they bite. The first
+two are not statistical at all. The third is, and it is the one I made
+most often.
 
 The first is the corpus. Ask any dataset what window it actually covers
 rather than what you asked it for. My first "thirty-day" crawl of settled
@@ -716,6 +717,25 @@ known. Use pre-close quotes at a fixed horizon, six hours out or one hour
 out, chosen before you look. This sounds obvious written down and is very
 easy to do by accident, because the settled record is the convenient one to
 join against.
+
+The third is the sample size, and specifically what one row of it means.
+Before believing an n, ask what a single independent observation of your
+claim actually is. I got this wrong twice in this project, by two different
+mechanisms. In the momentum test the well-powered cells turned out to be
+the cells where the price had not moved, so all the power was sitting on
+the control rather than on the question being asked. In the
+settlement-agreement counter, thirty-four rows were thirty-four rungs of
+one ladder governed by a single rules text, so they were one observation
+wearing thirty-four hats, and the bound I published was more than twice as
+tight as the evidence supported.
+
+Both errors are invisible to every arithmetic check you can run, because
+the arithmetic is not what is wrong. Both inflate n, which makes results
+look more powered and bounds look tighter, so the error always flatters
+you. And the check that catches them is a sentence rather than a formula:
+say out loud what one row represents, then ask whether that is the thing
+your claim is about. If a row is a rung and your claim is about ladders,
+you do not have the n you think you have.
 
 ## 6. What stays running
 
@@ -742,9 +762,9 @@ my thirty-six live pairs are rungs on the 2028 Democratic nomination
 ladder, one event, one rules text on each side. If the venues disagree
 about what counts as the nominee they disagree on all thirty-four at once.
 That is one observation, not thirty-four. My ten resolved pairs span two
-series, so the honest bound is 66% rather than 28%, and the entire verified
-inventory is worth five independent observations, which would bound the
-rate at 43%.
+series, so the honest bound is 66% rather than 28%, and the thirty-six
+live pairs will add only three series more. Five independent observations
+in total, ever, which would bound the rate at 43%.
 
 So the target is not a hundred resolutions. It is roughly seventy-three
 independent series, and the route there is rules review rather than
@@ -797,10 +817,11 @@ yields real ones.
 
 What the program certainly produced is the thing this document is: a
 bounded map. Which questions are closed, at what strength; which are open,
-and what data would close them; four named ways a careful person fools
-themselves, with the checks that catch each; and one small piece of
-arithmetic, p < m/(100+m), that turns "look at that spread" into a
-question with a number in it. That was worth three weeks. Whether it is
+and what data would close them; six named ways a careful person fools
+themselves, with the checks that catch each and a note on which one I
+needed a reader to find; and one small piece of arithmetic, p < m/(100+m),
+that turns "look at that spread" into a question with a number in it. That
+was worth three weeks. Whether it is
 worth more than that, November will say.
 
 ---
@@ -829,7 +850,7 @@ the cross-venue quote collection covers 11 – 27 July.
 | Post-jump drift, financials, economics, politics, elections, entertainment, sci-tech, long-dated crypto | **Insufficient data** | 18–171 per cell | 7.3–24.3c uncorrected | Not measured |
 | Exotic multi-leg parlays | Untradable | — | — | No pre-resolution quotes exist |
 | Cross-venue lead-lag / convergence | **Not measured**: entry condition unmet | 36 verified pairs vs 50 required | — | Program closed before analysis |
-| Cross-venue settlement agreement | Running instrument | 10 pairs = 2 independent series | 95% upper bound **66%** on mismatch rate (28% if the pairs were independent, which they are not) | Stalled: rules equivalence is a series-level property, so the whole 36-pair inventory is worth 5 series (bound 43%) against ~73 needed; none resolve before 2027 |
+| Cross-venue settlement agreement | Running instrument | 10 pairs = 2 independent series | 95% upper bound **66%** on mismatch rate (28% if the pairs were independent, which they are not) | Stalled: rules equivalence is a series-level property, so the 36 live pairs add only 3 series — 5 ever, bound 43%, against ~73 needed; none resolve before 2027 |
 
 A note on the last two rows, expanding on §4. The cross-venue program was
 closed without producing a lead-lag estimate, because it had registered in
