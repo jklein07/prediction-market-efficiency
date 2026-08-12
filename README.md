@@ -133,6 +133,15 @@ that resolved, not a sample. This sounds pedantic and turned out to be the
 single most consequential methodological choice in the program. §5
 explains what happened the one time I violated it.
 
+**One filter, which I should have disclosed here originally.** The
+calibration engine excludes observations whose quoted spread exceeds 10
+cents, because a mid sitting between a 20-cent bid and a 60-cent ask is not
+a price anything trades at. That drops 14.6% of observations, and far more
+in some categories: 36% of financials, 23% of economics, 17% of mentions.
+A reader asked whether that filter had been audited the way §5 says every
+sampling rule must be. It had not, so I audited it, and the last part of §5
+is what came back.
+
 **The cost hurdle.** Kalshi charges takers a fee that peaks near 1.75 cents
 per contract at even-money prices and falls toward the extremes, and an edge
 must clear that fee plus the spread it crosses. Across 260,000 observations
@@ -448,7 +457,8 @@ and reopening it needs both the pairs and a bounded mismatch rate.
 
 Everything above is only as credible as the process that would have caught
 it being wrong. Here is that process failing to be fooled, four times, in
-increasing order of subtlety.
+increasing order of subtlety, and then a fifth case where it did not catch
+the problem at all and a reader did.
 
 ### The edge that was a sampling choice
 
@@ -565,6 +575,53 @@ selection mechanism.** The corollary is a working habit rather than a
 principle. When a result is good enough to be exciting, the first
 hypothesis to test is not that the market is wrong, but that the pipeline
 is.
+
+### And one filter, which somebody else found
+
+After this went up, Josh B of OVERROUND read the code and pointed out that
+the rule I had just written down, that every sampling key and tie-break and
+dedup rule must be provably independent of outcomes, extends one step
+further than I had taken it. A row filter is the same kind of decision, and
+the spread filter had never been audited. He was right, and it is the one
+place in the pipeline I had exempted from my own standard without noticing.
+
+The audit says the filter removes exactly the population you would worry
+about. The observations it keeps are calibrated almost perfectly, and the
+ones it discards are not:
+
+| horizon | group | observations | implied | resolved | gap |
+|---|---|---|---|---|---|
+| 1 hour | kept | 62,958 | 39.9c | 39.4% | −0.5 pts |
+| 1 hour | **dropped** | 8,155 | 47.7c | 38.8% | **−8.9 pts** |
+| 6 hours | kept | 60,413 | 39.1c | 39.2% | +0.1 pts |
+| 6 hours | **dropped** | 11,757 | 51.0c | 40.0% | **−11.0 pts** |
+| 24 hours | kept | 45,468 | 35.5c | 35.4% | −0.1 pts |
+| 24 hours | **dropped** | 8,706 | 47.8c | 45.2% | **−2.6 pts** |
+
+Read alone, that is damning. An eleven point calibration gap sitting in the
+14.6% of the data I had excluded, in a document whose headline is that the
+market is efficient, is the exact shape of a result being produced by its
+own filter.
+
+What rescues it is the second question, which I had not asked either. Those
+markets are wrong, but nobody can act on it, because the spread you would
+cross to reach the mispricing is far larger than the mispricing. At the six
+hour horizon the discarded rows carry a median spread of 70 cents against
+that 11 point gap, and even the tightest quarter of them sit at 29 cents.
+The worst single cell is the 40-to-60 cent band six hours out, where a 14.5
+point gap sits behind a 91 cent median spread. You would pay ninety-one
+cents of spread to collect fourteen cents of error.
+
+So the filter survives, but for a reason I had not written down and had not
+checked, which is a weaker position than I thought I was in. The honest
+summary is that a filter I called a data-quality decision was also, silently,
+part of the definition of tradability, and it took an outside reader to make
+me prove it.
+
+That is the argument for publishing the code alongside the claims. The four
+above I caught myself, and this one needed somebody with no stake in the
+answer, which is a thing you can only get by making the code readable and
+then waiting.
 
 ### If you are replicating this
 
