@@ -445,10 +445,15 @@ across every item before you treat any of it as verified.
 
 On my ten pairs whose events have since resolved, settlements agreed ten
 times out of ten. That sounds reassuring until you compute the bound it
-buys: a 95% upper limit of 28% on the true mismatch rate, an order of
-magnitude short of break-even. The deviations Gebele and Matthes measure are
-real and their explanation is right. What the deviation is *not*, until
-someone bounds the mismatch rate, is an opportunity.
+buys, and it buys less than I first said: those ten pairs are rungs on two
+series, and whether two venues read a rules text the same way is a property
+of the rules text, not of the individual rung. Ten pairs are two
+independent observations. The 95% upper limit on the true mismatch rate is
+therefore 66%, not the 28% that ten independent draws would give, and
+either number is an order of magnitude short of break-even. The deviations
+Gebele and Matthes measure are real and their explanation is right. What
+the deviation is *not*, until someone bounds the mismatch rate, is an
+opportunity.
 
 I wanted to compare their divergence magnitudes against mine and I cannot,
 which is worth explaining because the reason is instructive. My pairs
@@ -718,21 +723,35 @@ Three instruments outlive this write-up, and each is designed to answer a
 question this study window could not.
 
 **The settlement-agreement counter.** Every cross-venue pair whose event
-resolves adds one observation to the mismatch-rate measurement: did the two
-venues actually settle the same way? Ten so far, ten agreements, which
-bounds the true rate only at 28%, nowhere near the one-to-five percent that
-would make the break-even arithmetic favorable.
+resolves adds an observation to the mismatch-rate measurement: did the two
+venues actually settle the same way? Ten pairs so far, ten agreements.
 
-The thing I got wrong about this instrument is worth stating, because I only
-noticed it after publishing. Each verified pair yields exactly one
-observation, at its resolution, so the ceiling is the number of pairs I have
-verified rather than the time I let it run. With 36 live pairs the counter
-tops out at 46 observations ever, and because those pairs all resolve in
-2027 and 2028 it produces none at all before then. It is not slow, it is
-stalled, and reaching the hundred resolutions that would make the bound
-useful requires verifying roughly ninety more pairs rather than waiting. The
-queue is now ordered by resolution date rather than match score, which is
-what built a 2028-heavy book in the first place.
+I got this instrument wrong twice, and both errors ran the same direction.
+
+The first is that each verified pair yields exactly one observation, at its
+resolution, so the ceiling is the number of pairs I have verified rather
+than the time I let it run. With 36 live pairs the counter tops out at 46
+observations ever, and because those pairs all resolve in 2027 and 2028 it
+produces none at all before then. It is not slow, it is stalled.
+
+The second is worse, and I found it only when a health check kept printing
+the counter next to the pair inventory. The pairs are not independent. What
+this instrument measures is whether two venues read a matched rules text
+the same way, and the binding rules sit at the series level. Thirty-four of
+my thirty-six live pairs are rungs on the 2028 Democratic nomination
+ladder, one event, one rules text on each side. If the venues disagree
+about what counts as the nominee they disagree on all thirty-four at once.
+That is one observation, not thirty-four. My ten resolved pairs span two
+series, so the honest bound is 66% rather than 28%, and the entire verified
+inventory is worth five independent observations, which would bound the
+rate at 43%.
+
+So the target is not a hundred resolutions. It is roughly seventy-three
+independent series, and the route there is rules review rather than
+patience. The review queue now returns one candidate per series, unreviewed
+series first and then earliest resolution, instead of ordering by match
+score: score ordering is what built a book that is mostly one ladder, and a
+second rung on a ladder I already hold costs a review and yields nothing.
 
 **The September calibration study.** The un-anchored categories (politics,
 elections, weather forecasting) are the ones the summer could not power a
@@ -810,7 +829,7 @@ the cross-venue quote collection covers 11 – 27 July.
 | Post-jump drift, financials, economics, politics, elections, entertainment, sci-tech, long-dated crypto | **Insufficient data** | 18–171 per cell | 7.3–24.3c uncorrected | Not measured |
 | Exotic multi-leg parlays | Untradable | — | — | No pre-resolution quotes exist |
 | Cross-venue lead-lag / convergence | **Not measured**: entry condition unmet | 36 verified pairs vs 50 required | — | Program closed before analysis |
-| Cross-venue settlement agreement | Running instrument | 10 resolutions | 95% upper bound 28% on mismatch rate | Stalled: ceiling is 46 at current pair inventory, none before 2027 |
+| Cross-venue settlement agreement | Running instrument | 10 pairs = 2 independent series | 95% upper bound **66%** on mismatch rate (28% if the pairs were independent, which they are not) | Stalled: rules equivalence is a series-level property, so the whole 36-pair inventory is worth 5 series (bound 43%) against ~73 needed; none resolve before 2027 |
 
 A note on the last two rows, expanding on §4. The cross-venue program was
 closed without producing a lead-lag estimate, because it had registered in
