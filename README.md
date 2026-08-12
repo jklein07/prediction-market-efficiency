@@ -133,14 +133,18 @@ that resolved, not a sample. This sounds pedantic and turned out to be the
 single most consequential methodological choice in the program. §5
 explains what happened the one time I violated it.
 
-**One filter, which I should have disclosed here originally.** The
-calibration engine excludes observations whose quoted spread exceeds 10
-cents, because a mid sitting between a 20-cent bid and a 60-cent ask is not
-a price anything trades at. That drops 14.6% of observations, and far more
-in some categories: 36% of financials, 23% of economics, 17% of mentions.
-A reader asked whether that filter had been audited the way §5 says every
-sampling rule must be. It had not, so I audited it, and the last part of §5
-is what came back.
+**One filter, which I should have disclosed here originally.** Every
+analysis in this project excludes observations whose quoted spread exceeds
+10 cents, because a mid sitting between a 20-cent bid and a 60-cent ask is
+not a price anything trades at. It is not one engine's data-quality rule, it
+is a condition on every result below. It drops 14.6% of observations, and
+far more in some categories: 36% of financials, 23% of economics, 17% of
+mentions. The momentum test applies it twice, at both the six-hour and
+one-hour observations, which removes 18% of the contracts priced at both and
+by construction removes the ones whose books widened in between. A reader
+asked whether the filter had been audited the way §5 says every sampling
+rule must be. It had not, so I audited it, and the last part of §5 is what
+came back.
 
 **The cost hurdle.** Kalshi charges takers a fee that peaks near 1.75 cents
 per contract at even-money prices and falls toward the extremes, and an edge
@@ -216,9 +220,14 @@ believe its other outputs.
 **Post-move drift.** If prediction markets under-react to news, then after
 a large confirmed price move the price should keep drifting the same way,
 and a trader entering an hour or two later should profit. I tested this on
-complete coverage of every long-lived contract that resolved in the window
-(23,137 contracts, 1.4 million price bars), requiring a jump to be
-confirmed by an actual trade rather than a quote flicker. In the categories
+every contract in the window that lived longer than 26 hours, which is
+23,137 contracts and 1.4 million price bars, requiring a jump to be
+confirmed by an actual trade rather than a quote flicker. That lifetime
+threshold is worth stating plainly, because it keeps 1.7% of the contracts
+that settled in the window. You cannot measure two-hour drift in a market
+that exists for one hour, so the cut is necessary and it does not depend on
+outcomes, but "complete coverage" would be a misleading way to describe
+what it covers. In the categories
 with enough resolutions to test properly the answer is a flat no. Entering
 one hourly candle after the jump, weather gives 2,090 and 1,747
 observations by direction, mentions markets 1,120 and 1,056, commodities 771
@@ -232,7 +241,9 @@ than a person with a manual approval step can act on.
 **Pregame momentum and reversion.** A separate question from calibration:
 never mind whether prices are *right*, do they *trend*? If a contract drifts
 up between six hours and one hour before an event, does it keep going, or
-does it snap back? Across 341 to 1,091 observations in
+does it snap back? "Drifts" here means a move of at least 3 cents, with
+anything smaller counted as flat, which is a threshold I picked rather than
+derived. Across 341 to 1,091 observations in
 the three cells with real samples, neither: every one of them has its
 implied probability sitting inside the confidence interval of what actually
 happened. Thresholds there run 5.8 to 8.5 cents corrected. Six further cells
@@ -342,9 +353,13 @@ size available behind them.
 
 Providing liquidity instead, posting resting orders and collecting the
 spread rather than paying it, fails for a reason worth naming precisely.
-In 3,820 simulated resting orders, using a deliberately pessimistic rule
-that only counts a fill when the market traded *through* my price, orders
-filled 62% of the time. That sounds like plenty of free spread. But the
+The test is narrower than that sentence sounds, so here is exactly what it
+was: a resting bid one cent inside the quoted bid, on favorites priced
+between 70 and 95 cents, an hour before the match ends. That band is where
+the bias lives, which is why I tested it there, but it is one band rather
+than the whole book. In 3,820 simulated resting orders, using a deliberately
+pessimistic rule that only counts a fill when the market traded *through* my
+price, orders filled 62% of the time. That sounds like plenty of free spread. But the
 fills arrived preferentially in exactly the games where the favorite was
 collapsing: I was buying from people who knew something I didn't, at the
 moments they knew it. This is adverse selection, and it consumed more than
