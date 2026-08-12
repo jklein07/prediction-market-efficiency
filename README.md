@@ -101,7 +101,7 @@ still holds an open position.
 
 ## 3. What was ruled out, and at what strength
 
-Before the results, the three things that make a null worth reading, and a
+Before the results, the four things that make a null worth reading, and a
 note on how to check any of it.
 
 **The detection threshold.** Any test can fail to find an effect; the
@@ -139,9 +139,9 @@ analysis in this project excludes observations whose quoted spread exceeds
 not a price anything trades at. It is not one engine's data-quality rule, it
 is a condition on every result below. It drops 14.6% of observations, and
 far more in some categories: 36% of financials, 23% of economics, 17% of
-mentions. The momentum test applies it twice, at both the six-hour and
-one-hour observations, which removes 18% of the contracts priced at both and
-by construction removes the ones whose books widened in between. A reader
+mentions. The momentum test applies it twice, at both the twenty-four-hour
+and six-hour observations, which removes 19% of the contracts priced at both
+and by construction removes the ones whose books widened in between. A reader
 asked whether the filter had been audited the way §5 says every sampling
 rule must be. It had not, so I audited it, and the last part of §5 is what
 came back.
@@ -222,7 +222,10 @@ a large confirmed price move the price should keep drifting the same way,
 and a trader entering an hour or two later should profit. I tested this on
 every contract in the window that lived longer than 26 hours, which is
 23,137 contracts and 1.4 million price bars, requiring a jump to be
-confirmed by an actual trade rather than a quote flicker. That lifetime
+confirmed by an actual trade rather than a quote flicker. A jump means the
+traded price moved at least 5 cents with the mid moving at least 3 cents the
+same way, and the jump has to happen at least two hours before the contract
+closes, so there is somewhere to drift to. That lifetime
 threshold is worth stating plainly, because it keeps 1.7% of the contracts
 that settled in the window. You cannot measure two-hour drift in a market
 that exists for one hour, so the cut is necessary and it does not depend on
@@ -240,16 +243,27 @@ than a person with a manual approval step can act on.
 
 **Pregame momentum and reversion.** A separate question from calibration:
 never mind whether prices are *right*, do they *trend*? If a contract drifts
-up between six hours and one hour before an event, does it keep going, or
-does it snap back? "Drifts" here means a move of at least 3 cents, with
-anything smaller counted as flat, which is a threshold I picked rather than
-derived. Across 341 to 1,091 observations in
-the three cells with real samples, neither: every one of them has its
-implied probability sitting inside the confidence interval of what actually
-happened. Thresholds there run 5.8 to 8.5 cents corrected. Six further cells
-split by direction of the move carry only 21 to 170 observations each, with
-thresholds of 15 to 34 cents, and are reported as insufficient rather than
-null. They could not have detected a large effect, let alone a tradable one.
+up between twenty-four hours and six hours before an event, does it keep
+going, or does it snap back? "Drifts" here means a move of at least 3
+cents, with anything smaller counted as flat, which is a threshold I picked
+rather than derived.
+
+This test does not answer its own question, and the first version of this
+write-up said it did. At a 3-cent threshold, 79% of these contracts are
+flat, so the three well-powered cells, the ones with 341 to 1,091
+observations and corrected thresholds of 5.8 to 8.5 cents, are the cells
+where the price did *not* move. Those come back calibrated, every one of
+them with its implied probability inside the interval of what actually
+happened. That is a real result and a useful control, but what it says is
+that contracts which sat still were priced correctly, which is a statement
+about calibration and not about trend.
+
+The cells that bear on momentum are the six split by direction, and they
+carry 21 to 170 observations each with corrected thresholds of 15 to 34
+cents. None of them shows an effect either, and at that resolution none of
+them could have. So the honest verdict is that pregame momentum is
+untested here rather than absent. The powered part of this test and the
+part that asks the question are not the same part.
 
 **Passive capture of the one bias that is real.** Covered in §4. Rejected
 with a powered test of its own, and for an interesting reason.
@@ -359,7 +373,10 @@ between 70 and 95 cents, an hour before the match ends. That band is where
 the bias lives, which is why I tested it there, but it is one band rather
 than the whole book. In 3,820 simulated resting orders, using a deliberately
 pessimistic rule that only counts a fill when the market traded *through* my
-price, orders filled 62% of the time. That sounds like plenty of free spread. But the
+price, orders filled 62% of the time. The simulation also charged the resting
+orders no maker fee at all, which is more generous than the real schedule, so
+the result below is what happens to this strategy under assumptions that
+favour it. That sounds like plenty of free spread. But the
 fills arrived preferentially in exactly the games where the favorite was
 collapsing: I was buying from people who knew something I didn't, at the
 moments they knew it. This is adverse selection, and it consumed more than
@@ -472,8 +489,9 @@ and reopening it needs both the pairs and a bounded mismatch rate.
 
 Everything above is only as credible as the process that would have caught
 it being wrong. Here is that process failing to be fooled, four times, in
-increasing order of subtlety, and then a fifth case where it did not catch
-the problem at all and a reader did.
+increasing order of subtlety, then a fifth case where it did not catch the
+problem at all and a reader did, and a sixth where every number was right
+and the sentence resting on them was not.
 
 ### The edge that was a sampling choice
 
@@ -638,6 +656,36 @@ above I caught myself, and this one needed somebody with no stake in the
 answer, which is a thing you can only get by making the code readable and
 then waiting.
 
+### And one verdict that was right about the wrong cells
+
+The five above are all about numbers. This one is about a sentence, and it
+survived every numerical check I ran, because the numbers in it were
+correct.
+
+The pregame momentum test splits contracts into three price regions and
+three move directions, nine cells in all. When I reproduced it I checked
+the published figures against the recorded run and they matched exactly:
+341 to 1,091 observations in the well-powered cells, corrected thresholds
+of 5.8 to 8.5 cents, no cell with its implied probability outside the
+realized interval. Verified, logged, checked off.
+
+What I never asked was *which* cells those were. A 3-cent move threshold
+leaves 79% of these contracts flat, so the three well-powered cells are the
+no-move cells. They are the control. The six cells that test whether a move
+continues or reverses hold 21 to 170 observations each and reach only 15 to
+34 cents corrected. I had written a paragraph that posed the momentum
+question and then answered it "neither" using the cells in which nothing
+had moved.
+
+That is not a wrong result, it is a different result than the one claimed:
+contracts that sat still were priced correctly, and whether moves trend or
+revert is untested at this sample size. §3 says that now, and the summary
+table records the trend verdict as insufficient. The general version is
+that reproducing a number checks the number, and the claim the number is
+standing under is a separate object requiring a separate check. My
+verification log recorded "write-up cross-check: PASS" for this table, and
+it was right to.
+
 ### If you are replicating this
 
 Two traps that cost me time and are invisible until they bite, neither of
@@ -757,7 +805,7 @@ the cross-venue quote collection covers 11 – 27 July.
 | Crypto hourly strikes (negative control) | No edge | 205–717 per band | 1.4–9.8c / 1.9–13.4c | Powered in liquid bands |
 | In-play favorite-longshot bias | **Real calibration gap**; EV ~+1c net of costs, below the EV threshold | 905–1,612 per band | 1.9–3.1c / 2.6–4.2c | Gap powered; out-of-sample replication in 2 of 3 favorite bands; EV not resolvable |
 | Retail passive capture of that bias | Fails (adverse selection) | 3,820 orders / 2,371 fills | 2.1c (single pre-named test) | Powered against its 2c bar |
-| Pregame momentum / reversion | No edge (cells with real samples) | 341–1,091 core; 21–170 directional | 4.2–6.2c / 5.8–8.5c core | Core powered; six directional cells insufficient (to 34c) |
+| Pregame momentum / reversion | Insufficient on trend; no edge in the no-move control | 341–1,091 no-move; 21–170 directional | 4.2–6.2c / 5.8–8.5c no-move | The powered cells are the no-move control and are calibrated; the six directional cells that actually test trend reach only 15–34c |
 | Post-jump drift, weather, mentions, commodities, sports | No edge | 771–2,090 per cell | 2.5–4.3c / 3.4–5.9c | Weather powered; mentions & commodities **untested in the 2–5c band**; sports rests on the calibration work, not this test |
 | Post-jump drift, financials, economics, politics, elections, entertainment, sci-tech, long-dated crypto | **Insufficient data** | 18–171 per cell | 7.3–24.3c uncorrected | Not measured |
 | Exotic multi-leg parlays | Untradable | — | — | No pre-resolution quotes exist |
